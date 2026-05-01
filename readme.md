@@ -29,17 +29,6 @@ Ou com yarn:
 yarn install
 ```
 
-### 3. Configurar variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
-
-```env
-PORT=3001
-JWT_SECRET=5f3a7b9c2d8e1f6a4b0c9e3d7f2a5b8c1e4f6a9d2c5e8f1a4b7c0d3e6f9a2b
-```
-
-**Nota:** Em produção, use um JWT_SECRET seguro e único.
-
 ## 🔧 Executar o projeto
 
 ### Desenvolvimento
