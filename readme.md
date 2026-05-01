@@ -274,7 +274,3 @@ PORT=3002
 ### Erro: "CORS error"
 - O middleware CORS está habilitado por padrão
 - Aceita requisições de qualquer origem
-
-## 📞 Suporte
-
-Para dúvidas ou problemas, entre em contato com o time de desenvolvimento.
