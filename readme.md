@@ -1,52 +1,280 @@
-----------------------------------
-ESPANHOL
-----------------------------------
+# Test SPS Server - Backend
 
-## Prueba NODE
+API backend desenvolvida em Node.js/Express para gerenciamento de usuários do sistema SPS.
 
-- Crear un CRUD (API REST) en Node para el registro de usuarios.
-- Para la creación de la prueba, utilizar un repositorio falso de usuarios (puede ser en memoria).
+## 📋 Pré-requisitos
 
-## Reglas
+- **Node.js** versão 14.0 ou superior
+- **npm** ou **yarn** instalado
+- **Git** (opcional)
 
-- Debe existir un usuario administrador previamente registrado para utilizar la autenticación (no es necesario cifrar la contraseña):
+## 🚀 Instalação
+
+### 1. Clonar ou baixar o projeto
+
+```bash
+git clone <url-do-repositorio>
+cd test-sps-server
+```
+
+### 2. Instalar as dependências
+
+```bash
+npm install
+```
+
+Ou com yarn:
+
+```bash
+yarn install
+```
+
+### 3. Configurar variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```env
+PORT=3001
+JWT_SECRET=5f3a7b9c2d8e1f6a4b0c9e3d7f2a5b8c1e4f6a9d2c5e8f1a4b7c0d3e6f9a2b
+```
+
+**Nota:** Em produção, use um JWT_SECRET seguro e único.
+
+## 🔧 Executar o projeto
+
+### Desenvolvimento
+
+```bash
+npm start
+```
+
+O servidor iniciará em `http://localhost:3001`
+
+### Executar com nodemon (auto-reload)
+
+```bash
+npm install -g nodemon
+nodemon src/index.js
+```
+
+## 📁 Estrutura do Projeto
+
+```
+test-sps-server/
+├── src/
+│   ├── helpers.js          # Funções utilitárias
+│   ├── index.js            # Entry point do servidor
+│   ├── routes.js           # Definição das rotas
+│   └── middleware/
+│       └── authMiddleware.js  # Middleware de autenticação JWT
+├── package.json
+├── .env                    # Variáveis de ambiente
+└── README.md
+```
+
+## 🔐 Autenticação
+
+A API utiliza **JWT (JSON Web Tokens)** para autenticação:
+
+- Token gerado no login com validade de **24 horas**
+- Token deve ser enviado no header: `Authorization: Bearer <token>`
+- Rotas protegidas verificam a autenticidade do token
+
+## 📡 Endpoints da API
+
+### 1. Login
+```http
+POST /login
+```
+
+**Request:**
+```json
 {
-  "name": "admin",
   "email": "admin@spsgroup.com.br",
-  "type": "admin",
   "password": "1234"
 }
+```
 
-- Crear una ruta de autenticación (token Jwt).
-- Las rutas de la API solo pueden ser ejecutadas si el usuario está autenticado.
-- Debe ser posible añadir usuarios con los campos: email, nombre, type, password.
-- No debe ser posible registrar un correo electrónico ya existente.
-- Debe ser posible eliminar usuarios.
-- Debe ser posible modificar los datos de un usuario.
-
-
-----------------------------------
-PORTUGUÊS
-----------------------------------
-
-# Teste NODE
-
-- Criar um CRUD (API REST) em node para cadastro de usuários
-- Para a criação do teste utilizar um repositório fake dos usuários. (Pode ser em memória)
-
-## Regras
-
-- Deve existir um usuário admin previamente cadastrado para utilizar autenticação (não precisa criptografar a senha);
-  {
-    name: "admin",
-    email: "admin@spsgroup.com.br",
-    type: "admin"
-    password: "1234"
+**Response (201):**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "email": "admin@spsgroup.com.br",
+    "nome": "Administrador",
+    "type": "admin",
+    "dataCriacao": "2024-05-01T10:30:00.000Z"
   }
+}
+```
 
-- Criar rota de autenticação (Jwt token)
-- As rotas da API só podem ser executadas se estiver autenticada
-- Deve ser possível adicionar usuários. Campos: email, nome, type, password
-- Não deve ser possível cadastrar o e-mail já cadastrado
-- Deve ser possível remover usuário
-- Deve ser possível alterar os dados do usuário
+### 2. Listar Usuários
+```http
+GET /users
+Headers: Authorization: Bearer <token>
+```
+
+**Response (200):**
+```json
+[
+  {
+    "id": 1,
+    "email": "admin@spsgroup.com.br",
+    "nome": "Administrador",
+    "type": "admin",
+    "dataCriacao": "2024-05-01T10:30:00.000Z"
+  },
+  {
+    "id": 2,
+    "email": "user@example.com",
+    "nome": "João Silva",
+    "type": "user",
+    "dataCriacao": "2024-05-02T14:15:00.000Z"
+  }
+]
+```
+
+### 3. Obter Usuário por ID
+```http
+GET /users/:id
+Headers: Authorization: Bearer <token>
+```
+
+**Response (200):**
+```json
+{
+  "id": 1,
+  "email": "admin@spsgroup.com.br",
+  "nome": "Administrador",
+  "type": "admin",
+  "dataCriacao": "2024-05-01T10:30:00.000Z"
+}
+```
+
+### 4. Criar Usuário
+```http
+POST /users
+Headers: 
+  - Authorization: Bearer <token>
+  - Content-Type: application/json
+```
+
+**Request:**
+```json
+{
+  "nome": "João Silva",
+  "email": "joao@example.com",
+  "type": "user",
+  "password": "senha123"
+}
+```
+
+**Response (201):**
+```json
+{
+  "message": "✅ Usuário criado com sucesso!",
+  "usuario": {
+    "id": 2,
+    "nome": "João Silva",
+    "email": "joao@example.com",
+    "type": "user",
+    "dataCriacao": "2024-05-02T14:15:00.000Z"
+  }
+}
+```
+
+### 5. Atualizar Usuário
+```http
+PUT /users/:id
+Headers: 
+  - Authorization: Bearer <token>
+  - Content-Type: application/json
+```
+
+**Request:**
+```json
+{
+  "nome": "João Silva Atualizado",
+  "email": "joao_novo@example.com",
+  "type": "gerente",
+  "password": "novaSenha123"
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "✅ Usuário atualizado com sucesso!",
+  "usuario": {
+    "id": 2,
+    "nome": "João Silva Atualizado",
+    "email": "joao_novo@example.com",
+    "type": "gerente",
+    "dataCriacao": "2024-05-02T14:15:00.000Z"
+  }
+}
+```
+
+### 6. Deletar Usuário
+```http
+DELETE /users/:id
+Headers: Authorization: Bearer <token>
+```
+
+**Response (200):**
+```json
+{
+  "message": "✅ Usuário deletado com sucesso!"
+}
+```
+
+## ⚠️ Códigos de Erro
+
+| Código | Descrição |
+|--------|-----------|
+| 400 | Requisição inválida (dados faltando ou inválidos) |
+| 401 | Não autenticado (token inválido ou expirado) |
+| 403 | Proibido (sem permissão para essa ação) |
+| 404 | Recurso não encontrado |
+| 500 | Erro interno do servidor |
+
+## 📝 Usuário Padrão
+
+Ao iniciar a aplicação, um usuário padrão é criado:
+
+```
+ID: 1
+Email: admin@spsgroup.com.br
+Nome: Administrador
+Tipo: admin
+Senha: 1234
+```
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Express.js** - Framework web
+- **jsonwebtoken** - Autenticação JWT
+- **dotenv** - Gerenciamento de variáveis de ambiente
+- **cors** - CORS para requisições cross-origin
+- **Node.js** - Runtime JavaScript
+
+## 🐛 Troubleshooting
+
+### Erro: "Port already in use"
+```bash
+# Mude a porta no arquivo .env
+PORT=3002
+```
+
+### Erro: "Token inválido"
+- Certifique-se de que o JWT_SECRET é o mesmo no .env
+- Verifique se o token foi enviado corretamente no header
+
+### Erro: "CORS error"
+- O middleware CORS está habilitado por padrão
+- Aceita requisições de qualquer origem
+
+## 📞 Suporte
+
+Para dúvidas ou problemas, entre em contato com o time de desenvolvimento.
