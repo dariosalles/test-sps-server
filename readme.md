@@ -13,7 +13,7 @@ API backend desenvolvida em Node.js/Express para gerenciamento de usuários do s
 ### 1. Clonar ou baixar o projeto
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/dariosalles/test-sps-server
 cd test-sps-server
 ```
 
